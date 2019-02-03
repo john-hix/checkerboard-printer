@@ -1,0 +1,17 @@
+main
+    Prompt for square side length
+
+    Calculate how many lines to print for each square given ratio of character height to width
+
+    Prompt for character to use for black squares
+
+    Build string to use as 1 line of console output when printing rows which start with a white square
+
+    Build string to use as 1 line of console output when printing rows which start with a black square
+        use specified character for black square shading
+
+    Repeat four times
+        PrintRow(whiteRow, height) print a chess board row's worth of lines, starting with white square
+        PrintRow(blackRow, height) print a chess board row's worth of lines, starting with black square
+
+    end program
