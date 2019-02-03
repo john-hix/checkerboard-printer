@@ -68,10 +68,15 @@ void PrintRow(string& row, int times) {
  * Prompts user for horizontal side length in characters.
  *
  * Pre: None
- * Post: Prompts have been printed to the screen; has read in side length variable from user; entered value echoed back
+ * Post: Prompts have been printed to the screen; if user entry fails validation 15 times,
+ *  default value of 5 is returned. User always informed of value used.
 */
 int PromptForSideLength() {
-    int len = 0;
+    int defaultLen = 5;             // Length of horizontal sides in characters
+    int len = defaultLen;           // Variable to return as horizontal side length if user input goes well
+    int dataEntryAttempts = 0;      // Number of times the user has attempted to enter a value
+    int maxDataEntryAttempts = 15;  // Maximum number of times to try to read user input before using default value
+
     cout << "Please type the horizontal side length (1 thru " << MAX_SQUARE_SIZE << ") to use for the \nchess board's squares, then press enter:  ";
     cin >> len;
     while(!cin || (len < 1 || len > MAX_SQUARE_SIZE)) {
@@ -79,12 +84,16 @@ int PromptForSideLength() {
             cin.clear();
             cin.ignore(100, '\n');
         }
+        if (dataEntryAttempts == maxDataEntryAttempts) {
+            cout << "Too many failed attempts. Using " << defaultLen << " as top and bottom side length.\n\n\n";
+            return defaultLen;
+        }
         cout << "\nThat entry is invalid. Enter a number between 1 and " << MAX_SQUARE_SIZE << ": ";
         cin >> len;
         cout << "\n";
+        dataEntryAttempts++;
     }
-    cout << "Using " << len << " as top and bottom side length.\n";
-    cout << endl << endl;
+    cout << "Using " << len << " as top and bottom side length.\n\n\n";
     return len;
 }
 
