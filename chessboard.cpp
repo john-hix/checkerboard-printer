@@ -64,6 +64,12 @@ void PrintRow(string& row, int times) {
     }
 }
 
+/**
+ * Prompts user for horizontal side length in characters.
+ *
+ * Pre: None
+ * Post: Prompts have been printed to the screen; has read in side length variable from user; entered value echoed back
+*/
 int PromptForSideLength() {
     int len = 0;
     cout << "Please type the horizontal side length (1 thru " << MAX_SQUARE_SIZE << ") to use for the \nchess board's squares, then press enter:  ";
