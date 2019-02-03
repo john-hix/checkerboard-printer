@@ -98,14 +98,22 @@ int PromptForSideLength() {
 }
 
 char PromptForBlackSquareChar() {
-    char use = '*';
+    char defaultChar = '*';
+    char use = defaultChar;
+    int dataEntryAttempts = 0;      // Number of times the user has attempted to enter a value
+    int maxDataEntryAttempts = 15;  // Maximum number of times to try to read user input before using default value
     cout << "Please enter the character to use when shading the board's black \nsquares, then press enter:  ";
     cin >> use;
     while (!cin) {
         cin.clear();
         cin.ignore(100, '\n');
-        cout << "\nInvalid entry. Enter a single character: ";
+        if (dataEntryAttempts == maxDataEntryAttempts) {
+            cout << "Too many failed attempts. Using " << defaultChar  << " for shading.\n\n\n";
+            return defaultChar;
+        }
+        cout << "\nInvalid entry or other input failure. Enter a single character: ";
         cin >> use;
+        dataEntryAttempts++;
     }
     cout << "Using \"" << use << "\" as shading for black squares.\n";
     return use;
