@@ -16,13 +16,15 @@
 
 using namespace std;
 
+// Function declarations
 void PrintRow(string& row, int times);
-int PromptForSideLength();
-int NumLinesToPrint(int vertLen);
+int PromptForSquareWidth();
+int CalcSquareHeightInLines(int vertLen);
 char PromptForBlackSquareChar();
 string BuildRowLine(int squareLength, char black, bool startWithWhite);
 string StringOfChars(char c, int num);  // Utility
 
+// Symbolic constants
 const int CHESS_BOARD_SIDE_LEN = 8;     // The number of squares on any side of the chess board
 const int MAX_SQUARE_SIZE = 100;        // Maximum number of characters allowed in forming the horizontal sides of the chess board's squares
 
@@ -33,18 +35,18 @@ int main ()
   // to determine how many characters to output to make each square have about the same (similar enough) side length.
   // I've chosen to let the user choose how many characters to print in the horizontal sides of each square
   // and then calculate how many newlines should be used.
-  int sqHorizLen = PromptForSideLength();                           // The number of characters to use in printing the squares' horizontal sides
-  int sqVertLen  = NumLinesToPrint(sqHorizLen);                     // The number of lines to use in printing the squares' vertical sides
-  char useForBlack = PromptForBlackSquareChar();                    // The character to use for making black squares
-  string whiteRow = BuildRowLine(sqHorizLen, useForBlack, true);    // A row beginning with a white square
-  string blackRow = BuildRowLine(sqHorizLen, useForBlack, false);   // A row beginning with a black square
+  int sqWidth = PromptForSquareWidth();                          // The number of characters to use in printing the squares' horizontal sides, i.e. width
+  int sqHeight  = CalcSquareHeightInLines(sqWidth);              // The number of lines to use in printing the squares' vertical sides, i.e. height
+  char useForBlack = PromptForBlackSquareChar();                 // The character to use for making black squares
+  string whiteRow = BuildRowLine(sqWidth, useForBlack, true);    // A row beginning with a white square
+  string blackRow = BuildRowLine(sqWidth, useForBlack, false);   // A row beginning with a black square
 
   cout << "\n\n\n"; // Add margin between prompt messages and board
 
   // Print two rows of squares on each pass
   for (int i = 0; i < (CHESS_BOARD_SIDE_LEN / 2); i++) {
-      PrintRow(whiteRow, sqVertLen);
-      PrintRow(blackRow, sqVertLen);
+      PrintRow(whiteRow, sqHeight);
+      PrintRow(blackRow, sqHeight);
   }
 
   return 0;
@@ -65,26 +67,27 @@ void PrintRow(string& row, int times) {
 }
 
 /**
- * Prompts user for horizontal side length in characters.
+ * Prompts user for how many characters wide to make each square in the board
  *
  * Pre: None
  * Post: Prompts have been printed to the screen; if user entry fails validation 15 times,
  *  default value of 5 is returned. User always informed of value used.
 */
-int PromptForSideLength() {
-    int defaultLen = 5;             // Length of horizontal sides in characters
-    int len = defaultLen;           // Variable to return as horizontal side length if user input goes well
-    int dataEntryAttempts = 0;      // Number of times the user has attempted to enter a value
-    int maxDataEntryAttempts = 15;  // Maximum number of times to try to read user input before using default value
+int PromptForSquareWidth() {
+    int defaultLen = 5;             // Default square side length
+    int len = 0;                    // Variable to return as square width if user input goes well
+    int dataEntryAttempts = 0;      // Number of times the user has attempted to enter a width value
+    int maxDataEntryAttempts = 15;  // Maximum number of times to try to read user input before using default width value
 
-    cout << "Please type the horizontal side length (1 thru " << MAX_SQUARE_SIZE << ") to use for the \nchess board's squares, then press enter:  ";
+    cout << "Please type the width, in characters, to use for the \nchess board's squares, then press enter (1 thru " << MAX_SQUARE_SIZE << "):  ";
     cin >> len;
-    while(!cin || (len < 1 || len > MAX_SQUARE_SIZE)) {
+
+    while(!cin || (len < 1 || len > MAX_SQUARE_SIZE)) {     // cin in fail state or input out of range
         if (!cin) {
             cin.clear();
             cin.ignore(100, '\n');
         }
-        if (dataEntryAttempts == maxDataEntryAttempts) {
+        if (dataEntryAttempts == maxDataEntryAttempts) {    // Too many attempts
             cout << "Too many failed attempts. Using " << defaultLen << " as top and bottom side length.\n\n\n";
             return defaultLen;
         }
@@ -96,6 +99,12 @@ int PromptForSideLength() {
     cout << "Using " << len << " as top and bottom side length.\n\n\n";
     return len;
 }
+/**
+ * Prompts user for which character to use when shading black squares
+ *
+ * Pre: cin is not in fail state
+ * Post: At least one prompt has been output to console; default value of '*' used if data entry fails 15 times.
+*/
 
 char PromptForBlackSquareChar() {
     char defaultChar = '*';
@@ -119,12 +128,25 @@ char PromptForBlackSquareChar() {
     return use;
 }
 
+/**
+ * Builds a string to use as one line of console output when printing chess board rows
+ *
+ * Pre:  squareLength is greater than zero and less than MAX_SQUARE_SIZE
+ * Post: Returned string is constructed with as many alternations (squares) as the value of CHESS_BOARD_SIDE_LEN
+ * @param int squareLength    - How wide to make each square, in characters. Number is not validated in this function.
+ * @param char black          - Which character to use for shading black squares
+ * @param bool startWithWhite - Set to true to use whitespace in the first part of the string,
+ *  ultimately for use in a row starting with a white square.
+*/
+
 string BuildRowLine(int squareLength, char black, bool startWithWhite) {
-    string rowLine = "";      // The string that will be returned
-    string wSq = StringOfChars(' ', squareLength);     // One row's worth of a white chess board square
-    string bSq = StringOfChars(black, squareLength);   // One row's worth of a black chess board square
-    int i = 1;     // Iterator must start at 1 because the mod operation is run against it to do different output for even/odd iterations
-    int loopEnd = CHESS_BOARD_SIDE_LEN + 1; // One more than CHESS_BOARD_SIDE_LEN because iterator starts at 1.
+    string rowLine = "";                                // The string that will be returned
+    string wSq = StringOfChars(' ', squareLength);      // One row's worth of a white chess board square
+    string bSq = StringOfChars(black, squareLength);    // One row's worth of a black chess board square
+    int i = 1;                                          // Iterator must start at 1 because the modulus operator
+                                                        //   is used on it to check if an iteration is even or odd
+    int loopEnd = CHESS_BOARD_SIDE_LEN + 1;             // One more than CHESS_BOARD_SIDE_LEN because iterator starts at 1.
+
     // Iterator is checked even/odd when determining which strings (squares, b vs w) to add; use this fact to set up which color goes first
     if (startWithWhite) {
         i++;
@@ -132,9 +154,9 @@ string BuildRowLine(int squareLength, char black, bool startWithWhite) {
     }
     // Create a black-white or white-black row by concatenating the basic strings
     while(i < loopEnd) {
-        if (i % 2 == 0) {
+        if (i % 2 == 0) {       // Even iterations add white output to the string
             rowLine += wSq;
-        } else {
+        } else {                // Odd iterations add white output to the string
             rowLine += bSq;
         }
         i++;
@@ -142,7 +164,13 @@ string BuildRowLine(int squareLength, char black, bool startWithWhite) {
     return rowLine;
 }
 
-// Returns a string with a repeating character num times
+/**
+ * Returns a string with a repeating character a specified number of times
+ *
+ * Pre: num is positive or zero
+ * @param char c  - The character to use in the string
+ * @param int num - How long to make the string
+*/
 string StringOfChars(char c, int num) {
     string out = "";
     int i = 0;
@@ -153,12 +181,19 @@ string StringOfChars(char c, int num) {
     return out;
 }
 
-// Calculates how many vertical lines to print given the number of horizontal characters
-int NumLinesToPrint(int vertLen) {
-    // In the original program, ratio of the squares' horizontal-side chars to vertical-side newlines is 8:5. Use that.
+/**
+ * Calculates the squares' height (how many vertical lines to print) given the number of horizontal characters
+ * that make up the squares' width. The calculation is based on the 8:5 ratio between width-wise chars to
+ * height-wise newlines given in the original program. Below 4 characters wide, the output looks best if the
+ * number of lines printed is rounded up, so that is what this function does in such cases.
+ *
+ * Pre: width is between 0 and MAX_SQUARE_LENGTH
+ * @param int width - How wide each square shall be, in characters
+ * @return int - The number of vertical lines to print, truncated if width is >= 4, rounded up if not.
+*/
+int CalcSquareHeightInLines(int width) {
     float round = 0.0;
-    if (vertLen < 4)  // Below 4 characters on top, the ratio did not look right; adjust accordingly.
+    if (width < 4)  // Below 4 characters wide, rounding up the number of lines looks best.
         round = 0.5;
-    int hori = ((5 * vertLen) / 8.0) + round ; // The ratio stated above, solved for height and rounded by a specified amount.
-    return hori;
+    return ((5 * width) / 8.0) + round ; // The ratio stated above, solved for height and rounded by the amount specified above
 }
