@@ -28,8 +28,7 @@ string StringOfChars(char c, int num);  // Utility
 const int CHESS_BOARD_SIDE_LEN = 8;     // The number of squares on any side of the chess board
 const int MAX_SQUARE_SIZE = 100;        // Maximum number of characters allowed in forming the horizontal sides of the chess board's squares
 
-int main ()
-{
+int main () {
   int sqWidth = PromptForSquareWidth();                          // The number of characters to use in printing the squares' horizontal sides, i.e. width
   int sqHeight  = CalcSquareHeightInLines(sqWidth);              // The number of lines to use in printing the squares' vertical sides, i.e. height
   char useForBlack = PromptForBlackSquareChar();                 // The character to use for making black squares
