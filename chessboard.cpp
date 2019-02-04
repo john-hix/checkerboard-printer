@@ -30,11 +30,6 @@ const int MAX_SQUARE_SIZE = 100;        // Maximum number of characters allowed 
 
 int main ()
 {
-  // In terms of pixels, we want each square share the same number of pixels on each side; however,
-  // text characters are taller than they are wide. We need to the ratio of height to width in the terminal
-  // to determine how many characters to output to make each square have about the same (similar enough) side length.
-  // I've chosen to let the user choose how many characters to print in the horizontal sides of each square
-  // and then calculate how many newlines should be used.
   int sqWidth = PromptForSquareWidth();                          // The number of characters to use in printing the squares' horizontal sides, i.e. width
   int sqHeight  = CalcSquareHeightInLines(sqWidth);              // The number of lines to use in printing the squares' vertical sides, i.e. height
   char useForBlack = PromptForBlackSquareChar();                 // The character to use for making black squares
