@@ -37,15 +37,20 @@ int main () {
   char useForBlack = PromptForBlackSquareChar();                 // The character to use for making black squares
 
   // BuildRowLine could have been used as a structural improvement even if the project scope had not included doing variable square sizes
+  // It is an improvement because it keeps the code DRYer and allows for easier maintenance/expansion, as shown with the ease with which
+  // this part of the program accomodates variable-size chess board squares
   string whiteRow = BuildRowLine(sqWidth, useForBlack, true);    // A row beginning with a white square
   string blackRow = BuildRowLine(sqWidth, useForBlack, false);   // A row beginning with a black square
 
   cout << "\n\n\n"; // Add margin between prompt messages and board
 
-  // Major structural improvement: loop when printing lines.
+  // Major structural improvement: loop when printing lines. This is an improvement because it reduces repetition in the code
   // Print two rows of squares on each pass
   for (int i = 0; i < (CHESS_BOARD_SIDE_LEN / 2); i++) {
-      PrintRow(whiteRow, sqHeight); // Structural improvement: use a function with a loop in it to print board rows. See func def.
+      // Structural improvement: use a function with a loop in it to print board rows.
+      // This is an improvement because it is cleaner to read here and makes it easy
+      // to specify different heights for the rows, even if not done interactively.
+      PrintRow(whiteRow, sqHeight);
       PrintRow(blackRow, sqHeight);
   }
 
