@@ -9,6 +9,9 @@
 // basic strings of white and black characters. The square size is variable
 // as well as the character used to shade black squares. The user is
 // prompted for both those values.
+//
+// NOTE to instructor: comments inside main point out three structural
+// improvements made.
 //******************************************************************
 
 #include <iostream>
@@ -32,14 +35,17 @@ int main () {
   int sqWidth = PromptForSquareWidth();                          // The number of characters to use in printing the squares' horizontal sides, i.e. width
   int sqHeight  = CalcSquareHeightInLines(sqWidth);              // The number of lines to use in printing the squares' vertical sides, i.e. height
   char useForBlack = PromptForBlackSquareChar();                 // The character to use for making black squares
+
+  // BuildRowLine could have been used as a structural improvement even if the project scope had not included doing variable square sizes
   string whiteRow = BuildRowLine(sqWidth, useForBlack, true);    // A row beginning with a white square
   string blackRow = BuildRowLine(sqWidth, useForBlack, false);   // A row beginning with a black square
 
   cout << "\n\n\n"; // Add margin between prompt messages and board
 
+  // Major structural improvement: loop when printing lines.
   // Print two rows of squares on each pass
   for (int i = 0; i < (CHESS_BOARD_SIDE_LEN / 2); i++) {
-      PrintRow(whiteRow, sqHeight);
+      PrintRow(whiteRow, sqHeight); // Structural improvement: use a function with a loop in it to print board rows. See func def.
       PrintRow(blackRow, sqHeight);
   }
 
